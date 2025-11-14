@@ -1889,6 +1889,7 @@
     "input-muted": "Toggle input mute",
     "keep-awake": "Keep awake",
     "keyboard-layout": "{layout} keyboard layout",
+    "layout": "Window layout",
     "manage-wifi": "Manage Wi-Fi",
     "microphone-volume-at": "Microphone volume at {volume}%\nLeft click for settings. Right click to toggle mute.\nScroll to modify volume.",
     "move-to-center-section": "Move to center section",
@@ -2082,5 +2083,17 @@
       "searching": "Searching for nearby networks...",
       "title": "Wi-Fi"
     }
+  },
+  "layout": {
+    "panel": {
+      "title": "Layout Manager",
+      "current": "Current Layout",
+      "no-compositor": "No compositor",
+      "unknown": "Unknown Layout",
+      "symbol": "Symbol: {symbol}",
+      "available": "Available Layouts"
+    },
+    "tooltip": "Layout: {layout} ({symbol})",
+    "tooltip-unavailable": "Layout switching unavailable"
   }
 }

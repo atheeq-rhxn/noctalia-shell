@@ -16,11 +16,12 @@ Item {
   property var windows: []
   property int focusedWindowIndex: -1
 
-  // Facade interface signals
-  signal workspaceChanged
-  signal activeWindowChanged
-  signal windowListChanged
-  signal displayScalesChanged
+   // Facade interface signals
+   signal workspaceChanged
+   signal activeWindowChanged
+   signal windowListChanged
+   signal displayScalesChanged
+   signal layoutChanged
 
    // MangoWC-specific state
    property bool initialized: false
@@ -462,11 +463,70 @@ Item {
 
   function setLayout(layoutName) {
     try {
-      const command = [...mmsgCommands.action.setLayout]
-      command.push(layoutName)
+      // Find layout by name and get its symbol
+      const layout = availableLayouts.find(l => l.name === layoutName)
+      if (!layout) {
+        Logger.e("MangoService", "Layout not found:", layoutName)
+        return
+      }
+      
+      // Use mmsg -l with symbol (not setlayout dispatch)
+      const command = ["mmsg", "-l", layout.symbol]
+      Logger.i("MangoService", `Setting layout: ${layoutName} (${layout.symbol}) with command:`, command.join(" "))
       Quickshell.execDetached(command)
     } catch (e) {
       Logger.e("MangoService", "Failed to set layout:", e)
+    }
+  }
+
+  // Get all available layouts from MangoWC
+  readonly property var availableLayouts: [
+    {"symbol": "S", "name": "scroller", "displayName": "Scroller"},
+    {"symbol": "T", "name": "tile", "displayName": "Tile"},
+    {"symbol": "G", "name": "grid", "displayName": "Grid"},
+    {"symbol": "M", "name": "monocle", "displayName": "Monocle"},
+    {"symbol": "K", "name": "deck", "displayName": "Deck"},
+    {"symbol": "CT", "name": "center_tile", "displayName": "Center Tile"},
+    {"symbol": "RT", "name": "right_tile", "displayName": "Right Tile"},
+    {"symbol": "VS", "name": "vertical_scroller", "displayName": "Vertical Scroller"},
+    {"symbol": "VT", "name": "vertical_tile", "displayName": "Vertical Tile"},
+    {"symbol": "VG", "name": "vertical_grid", "displayName": "Vertical Grid"},
+    {"symbol": "VK", "name": "vertical_deck", "displayName": "Vertical Deck"}
+  ]
+
+  // Get current layout index in availableLayouts array
+  function getCurrentLayoutIndex() {
+    for (let i = 0; i < availableLayouts.length; i++) {
+      if (availableLayouts[i].symbol === currentLayoutSymbol) {
+        return i
+      }
+    }
+    return 0 // Default to first layout if not found
+  }
+
+  // Switch to next layout in the list
+  function nextLayout() {
+    try {
+      const currentIndex = getCurrentLayoutIndex()
+      const nextIndex = (currentIndex + 1) % availableLayouts.length
+      const nextLayout = availableLayouts[nextIndex]
+      Logger.i("MangoService", `Switching to next layout: ${nextLayout.name} (${nextLayout.symbol})`)
+      setLayout(nextLayout.name)
+    } catch (e) {
+      Logger.e("MangoService", "Failed to switch to next layout:", e)
+    }
+  }
+
+  // Switch to previous layout in the list
+  function previousLayout() {
+    try {
+      const currentIndex = getCurrentLayoutIndex()
+      const prevIndex = currentIndex === 0 ? availableLayouts.length - 1 : currentIndex - 1
+      const prevLayout = availableLayouts[prevIndex]
+      Logger.i("MangoService", `Switching to previous layout: ${prevLayout.name} (${prevLayout.symbol})`)
+      setLayout(prevLayout.name)
+    } catch (e) {
+      Logger.e("MangoService", "Failed to switch to previous layout:", e)
     }
   }
 
@@ -664,6 +724,7 @@ Item {
     if (layoutSymbol !== currentLayoutSymbol) {
       currentLayoutSymbol = layoutSymbol
       currentLayout = layoutSymbol
+      layoutChanged()
     }
   }
 
@@ -775,6 +836,7 @@ Item {
      try {
        queryWorkspaces()
        queryWindows()
+       queryLayout()
        queryMonitorState()
      } catch (e) {
        Logger.e("MangoService", "Safe update failed:", e)

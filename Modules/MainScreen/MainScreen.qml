@@ -21,6 +21,7 @@ import qs.Modules.Panels.SessionMenu
 import qs.Modules.Panels.Settings
 import qs.Modules.Panels.SetupWizard
 import qs.Modules.Panels.Tray
+import qs.Modules.Panels.Layout
 import qs.Modules.Panels.Wallpaper
 import qs.Modules.Panels.WiFi
 
@@ -43,6 +44,7 @@ PanelWindow {
   readonly property alias settingsPanel: settingsPanel
   readonly property alias setupWizardPanel: setupWizardPanel
   readonly property alias trayDrawerPanel: trayDrawerPanel
+  readonly property alias layoutPanel: layoutPanel
   readonly property alias wallpaperPanel: wallpaperPanel
   readonly property alias wifiPanel: wifiPanel
 
@@ -58,6 +60,7 @@ PanelWindow {
   readonly property var settingsPanelPlaceholder: settingsPanel.panelPlaceholder
   readonly property var setupWizardPanelPlaceholder: setupWizardPanel.panelPlaceholder
   readonly property var trayDrawerPanelPlaceholder: trayDrawerPanel.panelPlaceholder
+  readonly property var layoutPanelPlaceholder: layoutPanel.panelPlaceholder
   readonly property var wallpaperPanelPlaceholder: wallpaperPanel.panelPlaceholder
   readonly property var wifiPanelPlaceholder: wifiPanel.panelPlaceholder
 
@@ -314,6 +317,17 @@ PanelWindow {
       Component.onCompleted: {
         objectName = "wallpaperPanel-" + (screen?.name || "unknown")
         PanelService.registerPanel(wallpaperPanel)
+      }
+    }
+
+    LayoutPanel {
+      id: layoutPanel
+      screen: root.screen
+      z: 50
+
+      Component.onCompleted: {
+        objectName = "layoutPanel-" + (screen?.name || "unknown")
+        PanelService.registerPanel(layoutPanel)
       }
     }
 

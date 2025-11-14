@@ -21,8 +21,9 @@ Singleton {
                            "CustomButton": customButtonComponent,
                            "DarkMode": darkModeComponent,
                            "KeepAwake": keepAwakeComponent,
-                           "KeyboardLayout": keyboardLayoutComponent,
-                           "LockKeys": lockKeysComponent,
+                            "KeyboardLayout": keyboardLayoutComponent,
+                            "Layout": layoutComponent,
+                            "LockKeys": lockKeysComponent,
                            "MediaMini": mediaMiniComponent,
                            "Microphone": microphoneComponent,
                            "NightLight": nightLightComponent,
@@ -40,9 +41,10 @@ Singleton {
                            "Tray": trayComponent,
                            "Volume"// A BIT HEAVY ?
                            : volumeComponent,
-                           "WiFi": wiFiComponent,
-                           "WallpaperSelector": wallpaperSelectorComponent,
-                           "Workspace": workspaceComponent // HEAVY
+                            "WiFi": wiFiComponent,
+                            "WallpaperSelector": wallpaperSelectorComponent,
+                            "Workspace": workspaceComponent, // HEAVY
+                            "Layout": layoutComponent
                          })
 
   property var widgetMetadata: ({
@@ -106,6 +108,10 @@ Singleton {
                                     "hideTextInVerticalBar": false
                                   },
                                   "KeyboardLayout": {
+                                    "allowUserSettings": true,
+                                    "displayMode": "onhover"
+                                  },
+                                  "Layout": {
                                     "allowUserSettings": true,
                                     "displayMode": "onhover"
                                   },
@@ -218,6 +224,9 @@ Singleton {
   }
   property Component keyboardLayoutComponent: Component {
     KeyboardLayout {}
+  }
+  property Component layoutComponent: Component {
+    Layout {}
   }
   property Component keepAwakeComponent: Component {
     KeepAwake {}
